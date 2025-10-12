@@ -127,13 +127,19 @@ def signup():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        google_link = request.form['google_link']
-        trustpilot_link = request.form['trustpilot_link']
+        google_link = request.form.get('google_link', '').strip()
+        trustpilot_link = request.form.get('trustpilot_link', '').strip()
+
+        # Enforce that at least one link must be provided
+        if not google_link and not trustpilot_link:
+            return "❌ Please provide at least one review link (Google or Trustpilot).", 400
 
         conn = get_db_connection()
         try:
-            conn.execute("INSERT INTO businesses (email, password_hash, google_link, trustpilot_link) VALUES (?, ?, ?, ?)",
-                         (email, password, google_link, trustpilot_link))
+            conn.execute("""
+                INSERT INTO businesses (email, password_hash, google_link, trustpilot_link)
+                VALUES (?, ?, ?, ?)
+            """, (email, password, google_link or None, trustpilot_link or None))
             conn.commit()
         except Exception as e:
             conn.close()
