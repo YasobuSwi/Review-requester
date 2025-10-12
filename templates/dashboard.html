@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard - Review Requester</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #111; color: #fff; text-align: center; padding-top: 50px; }
+    form { display: inline-block; background: #222; padding: 30px; border-radius: 10px; }
+    input { display: block; margin: 10px auto; padding: 10px; width: 300px; border-radius: 5px; border: none; }
+    button { background: #58a6ff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #3d7ecb; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Your Dashboard</h1>
+  <p>Update your review links below.</p>
+
+  <form method="POST" action="/update_links">
+    <input type="url" name="google_link" placeholder="Google Review Link" required>
+    <input type="url" name="trustpilot_link" placeholder="Trustpilot Link" required>
+    <button type="submit">Update Links</button>
+  </form>
+
+  <p><a href="/send">Send Review Requests</a> | <a href="/logout">Logout</a></p>
+</body>
+</html>
