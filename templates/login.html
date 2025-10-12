@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Review Requester</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #111; color: #fff; text-align: center; padding-top: 100px; }
+    form { display: inline-block; background: #222; padding: 30px; border-radius: 10px; }
+    input { display: block; margin: 10px auto; padding: 10px; width: 250px; border-radius: 5px; border: none; }
+    button { background: #58a6ff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #3d7ecb; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Business Login</h1>
+  <form method="POST" action="/login">
+    <input type="email" name="email" placeholder="Business Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <p>Don’t have an account? <a href="/signup">Sign up here</a></p>
+</body>
+</html>
