@@ -15,8 +15,11 @@
   <form method="POST" action="/signup">
     <input type="email" name="email" placeholder="Business Email" required>
     <input type="password" name="password" placeholder="Password" required>
-    <input type="url" name="google_link" placeholder="Google Review Link" required>
-    <input type="url" name="trustpilot_link" placeholder="Trustpilot Link" required>
+    <label>Google Review Link (optional if Trustpilot is provided)</label>
+<input type="url" name="google_link" placeholder="Google Review Link">
+
+<label>Trustpilot Review Link (optional if Google is provided)</label>
+<input type="url" name="trustpilot_link" placeholder="Trustpilot Review Link">
     <button type="submit">Sign Up</button>
   </form>
 </body>
