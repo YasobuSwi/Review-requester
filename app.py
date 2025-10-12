@@ -120,6 +120,57 @@ def send_email():
         return f"❌ Failed to send email: {e}", 500
 
 
+from flask import flash  # put this at the top too
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        google_link = request.form['google_link']
+        trustpilot_link = request.form['trustpilot_link']
+
+        conn = get_db_connection()
+        try:
+            conn.execute("INSERT INTO businesses (email, password_hash, google_link, trustpilot_link) VALUES (?, ?, ?, ?)",
+                         (email, password, google_link, trustpilot_link))
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            return f"❌ Sign up failed: {e}", 400
+
+        conn.close()
+        session['user_email'] = email
+        return redirect(url_for('dashboard'))
+
+    return render_template('signup.html')
+
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_email' not in session:
+        return redirect(url_for('login'))
+    return render_template('dashboard.html')
+
+
+@app.route('/update_links', methods=['POST'])
+def update_links():
+    if 'user_email' not in session:
+        return redirect(url_for('login'))
+
+    google_link = request.form['google_link']
+    trustpilot_link = request.form['trustpilot_link']
+    email = session['user_email']
+
+    conn = get_db_connection()
+    conn.execute("UPDATE businesses SET google_link = ?, trustpilot_link = ? WHERE email = ?",
+                 (google_link, trustpilot_link, email))
+    conn.commit()
+    conn.close()
+
+    flash('✅ Links updated successfully!')
+    return redirect(url_for('dashboard'))
+
 # ---------------------------
 # Run app
 # ---------------------------
