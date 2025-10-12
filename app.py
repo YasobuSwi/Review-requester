@@ -65,51 +65,63 @@ def send_review():
     return render_template('send.html')
 
 
+from flask import request, session, render_template
+import smtplib
+import os
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 @app.route('/send_email', methods=['POST'])
 def send_email():
+    # 🔒 Make sure the user is logged in
     if 'user_email' not in session:
         return "❌ You must be logged in to send review requests.", 403
 
-    # Get form data
+    # 📩 Get customer details from the form
     name = request.form['name']
     customer_email = request.form['email']
 
-    # Get business's review links from DB
+    # 🧑‍💼 Get the business's review links from the database
     business_email = session['user_email']
     conn = get_db_connection()
-    row = conn.execute("SELECT google_link, trustpilot_link FROM businesses WHERE email = ?", (business_email,)).fetchone()
+    row = conn.execute(
+        "SELECT google_link, trustpilot_link FROM businesses WHERE email = ?",
+        (business_email,)
+    ).fetchone()
     conn.close()
 
     if not row:
-        return "❌ No review links found for this business. Please set them up first.", 404
+        return "❌ No review links found for this business.", 404
 
     google_link = row['google_link']
     trustpilot_link = row['trustpilot_link']
 
-    # Email credentials (from Render env)
+    # 📨 Build the email content dynamically
+    body_lines = [
+        f"Hi {name},",
+        "\nThank you for choosing us!",
+        "\nCould you take a minute to leave us a review? It really helps small businesses like ours grow."
+    ]
+
+    if google_link:
+        body_lines.append(f"\n🌟 Google Reviews: {google_link}")
+    if trustpilot_link:
+        body_lines.append(f"\n⭐ Trustpilot: {trustpilot_link}")
+
+    body_lines.append("\nWe truly appreciate your support 🙏")
+    body = "\n".join(body_lines)
+
+    # ✉️ Setup the email
     sender_email = os.environ.get('EMAIL_USER')
     sender_password = os.environ.get('EMAIL_PASS')
 
-    # Build the email
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = customer_email
-    msg['Subject'] = "We'd love your feedback ⭐"
-
-    body = f"""
-    Hi {name},
-
-    Thank you for choosing us!
-
-    Could you take a minute to leave us a review? It really helps.
-
-    🌟 Google Reviews: {google_link}
-    ⭐ Trustpilot: {trustpilot_link}
-
-    Thanks so much 🙏
-    """
+    msg['Subject'] = "We’d love your feedback ⭐"
     msg.attach(MIMEText(body, 'plain'))
 
+    # 🚀 Send the email using Gmail SMTP
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(sender_email, sender_password)
