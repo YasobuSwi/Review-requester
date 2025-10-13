@@ -176,13 +176,16 @@ def update_links():
     if 'user_email' not in session:
         return redirect(url_for('login'))
 
-    google_link = request.form['google_link']
-    trustpilot_link = request.form['trustpilot_link']
+    google_link = request.form.get('google_link', '').strip() or None
+    trustpilot_link = request.form.get('trustpilot_link', '').strip() or None
     email = session['user_email']
 
     conn = get_db_connection()
-    conn.execute("UPDATE businesses SET google_link = ?, trustpilot_link = ? WHERE email = ?",
-                 (google_link, trustpilot_link, email))
+    conn.execute("""
+        UPDATE businesses
+        SET google_link = ?, trustpilot_link = ?
+        WHERE email = ?
+    """, (google_link, trustpilot_link, email))
     conn.commit()
     conn.close()
 
