@@ -54,8 +54,9 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('user_email', None)
-    return redirect(url_for('home'))
+    session.clear()
+    flash('✅Logged out successfully.')
+    return redirect(url_for('login'))
 
 
 from flask import request, session, render_template
