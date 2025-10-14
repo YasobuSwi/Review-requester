@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Links</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #111; color: #fff; text-align: center; margin-top: 50px; }
+        input { padding: 10px; margin: 10px; width: 300px; }
+        button { padding: 10px 20px; background: #58a6ff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        a.back { display: inline-block; margin-top: 20px; color: #58a6ff; text-decoration: underline; }
+        .flash-messages { margin: 15px auto; padding: 10px; background: #2ecc71; color: white; max-width: 400px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <h1>Update Your Links</h1>
+    <form method="POST" action="{{ url_for('update_links') }}">
+        <input type="text" name="google_link" placeholder="Google Review Link"><br>
+        <input type="text" name="trustpilot_link" placeholder="Trustpilot Link"><br>
+        <button type="submit">Update Links</button>
+    </form>
+
+    <a href="{{ url_for('dashboard') }}" class="back">⬅️ Back to Dashboard</a>
+
+</body>
+</html>
