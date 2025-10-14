@@ -58,13 +58,6 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/send')
-def send_review():
-    if 'user_email' not in session:
-        return redirect(url_for('login'))
-    return render_template('send.html')
-
-
 from flask import request, session, render_template
 import smtplib
 import os
