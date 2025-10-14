@@ -170,14 +170,18 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html')
 
+@app.route('/update_links_page')
+def update_links_page():
+    if 'user_email' not in session:
+        return redirect(url_for('login'))
+    return render_template('update_links.html')
 
 @app.route('/update_links', methods=['POST'])
 def update_links():
     if 'user_email' not in session:
         return redirect(url_for('login'))
-
-    google_link = request.form.get('google_link', '').strip() or None
-    trustpilot_link = request.form.get('trustpilot_link', '').strip() or None
+    google_link = request.form.get('google_link')
+    trustpilot_link = request.form.get('trustpilot_link')
     email = session['user_email']
 
     conn = get_db_connection()
@@ -189,8 +193,14 @@ def update_links():
     conn.commit()
     conn.close()
 
-    flash('✅ Your links have been updated successfully!')
+    flash('✅ Your links have been updated!')
     return redirect(url_for('dashboard'))
+
+@app.route('/send')
+def send_review():
+    if 'user_email' not in session:
+        return redirect(url_for('login'))
+    return render_template('send.html')
 
 # ---------------------------
 # Run app
