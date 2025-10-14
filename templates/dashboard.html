@@ -1,36 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard - Review Requester</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #111; color: #fff; text-align: center; padding-top: 50px; }
-    form { display: inline-block; background: #222; padding: 30px; border-radius: 10px; }
-    input { display: block; margin: 10px auto; padding: 10px; width: 300px; border-radius: 5px; border: none; }
-    button { background: #58a6ff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #3d7ecb; }
-    a { color: #58a6ff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+    <title>Dashboard - Review Requester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            margin-top: 50px;
+        }
+        a.button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #58a6ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a.button:hover {
+            background-color: #3d8be8;
+        }
+        a.logout {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #f44;
+            text-decoration: underline;
+        }
+        .flash-messages {
+            margin: 15px auto;
+            padding: 10px;
+            background: #2ecc71;
+            color: white;
+            max-width: 400px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="flash-messages">
-      {% for message in messages %}
-        <p>{{ message }}</p>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-  <h1>Welcome to Your Dashboard</h1>
-  <p>Update your review links below.</p>
 
-  <form method="POST" action="/update_links">
-    <input type="url" name="google_link" placeholder="Google Review Link">
-    <input type="url" name="trustpilot_link" placeholder="Trustpilot Link">
-    <button type="submit">Update Links</button>
-  </form>
+    <a href="{{ url_for('logout') }}" class="logout">🚪 Logout</a>
 
-  <p><a href="/send">Send Review Requests</a> | <a href="/logout">Logout</a></p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <h1>Welcome to Your Dashboard</h1>
+    <p>Select an option below:</p>
+
+    <a href="{{ url_for('update_links_page') }}" class="button">✍️ Update Links</a>
+    <a href="{{ url_for('send_review') }}" class="button">📩 Send Review Request</a>
+
 </body>
 </html>
