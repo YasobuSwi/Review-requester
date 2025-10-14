@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import sqlite3
 import os
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # ---------------------------
 # Flask app setup
@@ -40,14 +41,16 @@ def login():
         password = request.form['password']
 
         conn = get_db_connection()
-        user = conn.execute("SELECT * FROM businesses WHERE email = ? AND password_hash = ?", (email, password)).fetchone()
+        user = conn.execute("SELECT * FROM businesses WHERE email = ? , (email,)).fetchone()
         conn.close()
 
-        if user:
-            session['user_email'] = email
-            return redirect(url_for('send_review'))
-        else:
-            return "❌ Invalid login details", 401
+    if user and check_password_hash(user['password_hash'], password):
+        session['user_email'] = email
+        flash('✅Logged in successfully.')
+        return redirect(url_for('dashboard'))
+    else:
+        flash('❌Invalid login details')
+        return redirect(url_for('login'))
 
     return render_template('login.html')
 
@@ -128,6 +131,8 @@ def send_email():
 
 from flask import flash  # put this at the top too
 
+from werkzeug.security import generate_password_hash
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -140,12 +145,15 @@ def signup():
         if not google_link and not trustpilot_link:
             return "❌ Please provide at least one review link (Google or Trustpilot).", 400
 
+        # ✅ Hash the password before saving
+        hashed_password = generate_password_hash(password)
+
         conn = get_db_connection()
         try:
             conn.execute("""
                 INSERT INTO businesses (email, password_hash, google_link, trustpilot_link)
                 VALUES (?, ?, ?, ?)
-            """, (email, password, google_link or None, trustpilot_link or None))
+            """, (email, hashed_password, google_link or None, trustpilot_link or None))
             conn.commit()
         except Exception as e:
             conn.close()
