@@ -13,6 +13,15 @@
   </style>
 </head>
 <body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
   <h1>Welcome to Your Dashboard</h1>
   <p>Update your review links below.</p>
 
