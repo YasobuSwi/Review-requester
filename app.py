@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -189,7 +189,7 @@ def update_links():
     conn.commit()
     conn.close()
 
-    flash('✅ Links updated successfully!')
+    flash('✅ Your links have been updated successfully!')
     return redirect(url_for('dashboard'))
 
 # ---------------------------
